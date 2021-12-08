@@ -1,58 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/bootstrap.min.css" />
-    <title>alamin</title>
-  </head>
-  <body>
-    <div
-      class="d-flex justify-content-center align-items-center"
-      style="min-height: 100vh"
-    >
-      <div class="">
-        <p id="peerId"></p>
-        <p class="text-danger" id="connectionStatus">Connection status:</p>
-        <input
-          type="text"
-          id="PartnerPeerID"
-          placeholder="partner peer id"
-          class="form-control"
-        />
 
-        <div class="text-center">
-          <button class="btn btn-warning my-2" id="connectBtn">Content</button>
-        </div>
-        <h6>Message from alamin: 
-            <span id='receiveMsg'></span>
-        </h6>
-        <input type="text" id='msg' placeholder='send message' class="form-control">
-       <div class="text-center">
-        <button id='sendBtn' class="btn btn-primary my-2" id="msg">Send</button>
-       </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/bootstrap.min.css" />
+  <title>alamin</title>
+</head>
+
+<body>
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
+    <div class="">
+      <p id="peerId"></p>
+      <p class="text-danger" id="connectionStatus">Connection status:</p>
+      <input type="text" id="PartnerPeerID" placeholder="Enter peer id" class="form-control" />
+
+      <div class="text-center">
+        <button class="btn btn-warning my-2" id="connectBtn">Content</button>
+      </div>
+      <hr />
+      <h6>Message from Amir:</h6>
+      <span id="receiveMsg"></span>
+      <input type="text" id="msg" placeholder="Send message" class="form-control" />
+      <div class="text-center">
+        <button id="sendBtn" class="btn btn-primary my-2">Send</button>
       </div>
     </div>
+  </div>
 
-    <script type="text/javascript" src="./js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="./js/peerjs.min.js"></script>
-    <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
-    <script>
-      var peer = new Peer();
-      peer.on("open", function (PeerID) {
-        document.getElementById("peerId").innerHTML =
-          "<b>Alamin</b> Peer ID is:- " + PeerID;
+  <script type="text/javascript" src="./js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="./js/peerjs.min.js"></script>
+  <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
+  <script>
+    var message=[];
+    // Random peer id generate start
+
+    var peer = new Peer();
+    peer.on("open", function (PeerID) {
+      document.getElementById("peerId").innerHTML =
+        "<b>Al Amin </b> Peer ID is:- " + PeerID;
+    });
+    // Random peer id generate start
+
+    //  Connection stablish start
+    $("#connectBtn").on("click", function () {
+      let PartnerPeerID = $("#PartnerPeerID").val();
+
+      let conn = peer.connect(PartnerPeerID);
+      conn.on("open", function () {
+        $("#connectionStatus").html("Connection Status:YES");
+        ReceivedMessage();
       });
+    });
+    //  Connection stablish end
 
-      $("#connectBtn").on("click", function () {
-        let PartnerPeerID = $("#PartnerPeerID").val();
-      
-        let conn = peer.connect(PartnerPeerID);
-        conn.on("open", function () {
-          $("#connectionStatus").html("Connection Status:YES");
+    // Send message start
+    $("#sendBtn").on("click", function () {
+      let msg = $("#msg").val();
+      let PartnerPeerID = $("#PartnerPeerID").val();
+      let conn = peer.connect(PartnerPeerID);
+      conn.on("open", function () {
+        conn.send(msg);
+      });
+    });
+    // Send message end
+
+    // Receive message work start
+    function ReceivedMessage() {
+      peer.on("connection", function (conn) {
+        conn.on("data", function (msg) {
+          $("#receiveMsg").html(msg);
         });
       });
-    </script>
-  </body>
+    }
+    // Receive message work start
+  </script>
+</body>
+
 </html>
